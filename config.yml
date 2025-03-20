@@ -1,0 +1,10 @@
+wechat:
+  contacts:
+    - wxid: "wxid_1"
+      alias:
+        - 爸爸
+        - 康强
+    - wxid: "wxid_2"
+      alias:
+        - 妈妈
+        - 园园

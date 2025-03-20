@@ -20,11 +20,7 @@ _queue = queue.Queue()
 
 class BotServer:
     def __init__(self):
-        self.wcf = Wcf()
-        if not self.wcf.is_login():
-            logger.error("微信未登录")
-            raise Exception("微信未登录")
-
+        self.wcf = Wcf(block=False)
         # 创建消息队列
         self.msg_queue = _queue
         # 控制标志
@@ -102,6 +98,7 @@ _bot_instance = None
 
 def get_bot_instance() -> BotServer:
     """获取全局 BotServer 实例"""
+    global _bot_instance
     if _bot_instance is None:
         _bot_instance = BotServer()
     return _bot_instance

@@ -3,10 +3,10 @@
 
 from flask import Flask, request
 from bot.conf import config
-from wcferry import Wcf, WxMsg
+from bot.bot_server import get_bot_instance
 
 app = Flask(__name__)
-wcf = Wcf()
+wcbot = get_bot_instance()
 
 @app.route('/')
 def index():
@@ -15,8 +15,6 @@ def index():
 @app.route('/msg', methods=['POST'])
 def msg():
     body = request.get_json()
-    if not wcf.is_login():
-        return 'not wechat account login', 404
     
     wxid = body['wxid']
     msg = body['msg']
@@ -28,10 +26,8 @@ def msg():
         aters.append(alia)
 
     aters_str = ','.join(aters)
-    if wcf.send_text(msg, wxid, aters_str) == 0:
-        return 'send msg success', 201
-    else:
-        return 'send msg failed', 400
+    wcbot.send_msg(msg, wxid, aters_str)
+    return 'send msg success', 201
 
 if __name__ == '__main__':
     app.run(debug=True) 

@@ -4,10 +4,12 @@
 from wcferry import Wcf, WxMsg
 from bot.conf import config
 import time
+import os
 import logging
 import queue
 from threading import Thread
 from typing import Optional
+import json
 
 logging.basicConfig(
     level=logging.INFO,
@@ -72,6 +74,24 @@ class BotServer:
             except Exception as e:
                 logger.error(f"微信未登录: {e}")
                 time.sleep(1)
+
+        # 获取联系人列表并保存到文件
+        try:
+            logger.info("正在获取联系人列表...")
+            contacts = self.wcf.get_contacts()
+            
+            # 确保 logs 目录存在
+            if not os.path.exists("logs"):
+                os.makedirs("logs")
+                
+            # 将联系人列表保存到文件
+            contacts_file = os.path.join("logs", "current_contract.json")
+            with open(contacts_file, "w", encoding="utf-8") as f:
+                json.dump(contacts, f, ensure_ascii=False, indent=2)
+                
+            logger.info(f"联系人列表已保存到 {contacts_file}")
+        except Exception as e:
+            logger.error(f"获取联系人列表失败: {e}")
 
         while True:
             logger.info("开始监听消息...")
